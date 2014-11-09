@@ -11,7 +11,7 @@ Character frequency is a good metric.
 Evaluate each output and choose the one with the best score.
 '''
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 from binascii import hexlify, unhexlify
 
 from two import xor
@@ -19,9 +19,27 @@ from two import xor
 CT = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
 KEYS = [chr(i) for i in xrange(0x7f)]  # all possible keys
 LETTERS = ("e", "t", "o", "a", "i", "n", "s", "r")  # most frequent letters
+# http://www.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html
+ENGLISH_FREQ_DIST = {"E": .12, "T": .091, "A": .0812, "O": .0768, "I": .0731,
+                     "N": .0695, "S": .0628, "R": .0602, "H": .0592, "D": .0432,
+                     "L": .0398, "U": .0288, "C": .0271, "M": .0261, "F": .023,
+                     "Y": .0211, "W": .0209, "G": .0203, "P": .0182, "B": .0149,
+                     "V": .0111, "K": .0069, "X": .0017, "Q": .0011, "J": .001,
+                     "Z": .0007, " ": .2}
 
 
-def decrypt(key, ct):
+def english_proximity(pt):
+    dist = Counter(pt)
+    score = 0.0
+
+    for k, v in dist.iteritems():
+        k = k.upper()
+        if k in ENGLISH_FREQ_DIST:
+            score += ENGLISH_FREQ_DIST[k] * v
+    return score / len(pt)
+
+
+def decrypt(key, ct, pad_key=True):
     '''pad the key to ct length and xor them together.
     ct and k are hex strings (hexlify output)
     '''
@@ -29,12 +47,15 @@ def decrypt(key, ct):
     ct = unhexlify(ct)
     k = unhexlify(key)
 
-    key = ""
-    diff = len(ct) - len(k)
-    while diff > 0:
-        key += k
-        diff = len(ct) - len(key)
-    assert len(ct) == len(key)
+    if pad_key:
+        key = ""
+        diff = len(ct) - len(k)
+        while diff > 0:
+            key += k
+            diff = len(ct) - len(key)
+        assert len(ct) == len(key)
+    else:
+        key = k
     return unhexlify(_hex(xor(hexlify(ct), hexlify(key))))
 
 
@@ -47,45 +68,24 @@ def _hex(byte):
         return byte
 
 
-def freqdist(ct):
-    '''find the number of occurances of each byte in a hexstring.'''
+def solve_single_char(ct, keys=None, min_ep=0.05):
+    '''Return a list of possible keys and the equivalent plaintext,
 
-    dist = defaultdict(int)
-    bytess = [byte for byte in unhexlify(ct)]
-    for byte in bytess:
-        dist[byte] += 1
-    return dist
+    (hopefully) ordered by likelyhood.
+    '''
 
-
-def solve_single_char(ct):
-    dist = freqdist(ct)
-    sort = sorted(dist, key=dist.get)  # sort bytes by occurance, low to high
-
-    most_frequent = sort[-1]
-    keys = [_hex(xor(hexlify(most_frequent), hexlify(k))) for k in KEYS]
-
-    garbage = [chr(i) for i in range(0x00, 0x41) + range(0x7b, 0x7f)]
-    garbage.append(["[", "\\", "]", "^", "_", "`"])
-    garbage.remove("'")
-    garbage.remove(" ")
+    if not keys:
+        keys = KEYS
+    keys = [hexlify(k) for k in keys]
     possibilities = []
 
     for k in keys:
-        pt = decrypt(k, CT).lower()
-        dist = freqdist(pt.encode("hex"))
-        sort = sorted(dist, key=dist.get)
+        pt = decrypt(k, ct).lower()
+        ep = english_proximity(pt)
+        if ep >= min_ep:
+            possibilities.append((k, pt, ep))
 
-        for char in sort:
-            if char in garbage:
-                try:
-                    possibilities.remove((k, pt))
-                except:
-                    pass
-                break
-        else:
-            possibilities.append((k, pt))
-
-    return possibilities
+    return sorted(possibilities, key=lambda x: x[2])[::-1]
 
 
 if __name__ == "__main__":
@@ -95,3 +95,4 @@ if __name__ == "__main__":
     for i in possibilities:
         print("key: {}".format(unhexlify(i[0])))
         print(i[1])
+        print("{}% sure.".format(i[2] * 100))
