@@ -8,7 +8,7 @@ import math
 import urllib2
 from binascii import unhexlify, hexlify
 
-from three import LETTERS
+from three import solve_single_char
 
 FILE = "http://cryptopals.com/static/challenge-data/4.txt"
 
@@ -44,7 +44,14 @@ if __name__ == "__main__":
     print("I sorted the ciphertexts by their Shannon entropy.")
     print("Here are is the sample with the lowest entropy ({}):".format(ent))
     print(ct)
-    print("Chances are, this is your guy. I cbf to check right now.")
+    possibilities = solve_single_char(ct)
+    key = unhexlify(possibilities[0][0])
+    ct = possibilities[0][1]
+    ep = possibilities[0][2]
+    print("Aaaaaaand now I tried to crack it.")
+    print("key: {}".format(key))
+    print(ct)
+    print("{}% sure".format(ep * 100))
     # The lowest entropy is 3.99, the entropy of CT from 3 is 3.914
     # the next highest is 4.319, and it doesn't change much more after that
     # so we're probably good

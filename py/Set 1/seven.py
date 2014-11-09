@@ -31,7 +31,7 @@ KEY = "YELLOW SUBMARINE"
 
 
 def aes_ecb_decrypt(key, ct):
-    ''''''
+    '''Decrypt a ciphertext with the given key.'''
 
     cipher = AES.new(key, mode=AES.MODE_ECB)
     return cipher.decrypt(ct)
