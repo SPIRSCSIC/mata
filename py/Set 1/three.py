@@ -18,7 +18,6 @@ from two import xor
 
 CT = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
 KEYS = [chr(i) for i in xrange(0x7f)]  # all possible keys
-LETTERS = ("e", "t", "o", "a", "i", "n", "s", "r")  # most frequent letters
 # http://www.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html
 ENGLISH_FREQ_DIST = {"E": .12, "T": .091, "A": .0812, "O": .0768, "I": .0731,
                      "N": .0695, "S": .0628, "R": .0602, "H": .0592, "D": .0432,
@@ -34,8 +33,7 @@ def english_proximity(pt):
 
     for k, v in dist.iteritems():
         k = k.upper()
-        if k in ENGLISH_FREQ_DIST:
-            score += ENGLISH_FREQ_DIST[k] * v
+        score += ENGLISH_FREQ_DIST.get(k, 0) * v
     return score / len(pt)
 
 
@@ -92,7 +90,7 @@ if __name__ == "__main__":
     possibilities = solve_single_char(CT)
 
     print("possible keys and ciphertexts:")
-    for i in possibilities:
-        print("key: {}".format(unhexlify(i[0])))
-        print(i[1])
-        print("{}% sure.".format(i[2] * 100))
+    for k, pt, ep in possibilities:
+        print("key: {}".format(unhexlify(k)))
+        print(pt)
+        print("{}% sure.".format(ep * 100))
