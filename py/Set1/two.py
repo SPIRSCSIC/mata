@@ -21,6 +21,15 @@ def xor(one, two):
     return hex(xored).replace("0x", "").replace("L", "")
 
 
+def xor2(one, two):
+    '''xor two non-hex encoded strings'''
+
+    out = xor(binascii.hexlify(one), binascii.hexlify(two))
+    try:
+        return binascii.unhexlify(out)
+    except:
+        return binascii.unhexlify("0" + out)
+
 if __name__ == "__main__":
     try:
         assert xor(ONE, TWO) == XORED
