@@ -3,6 +3,8 @@ from functools import partial
 from collections import Counter
 from binascii import hexlify, unhexlify
 
+from Set1.eight import is_ecb
+from two import aes_ecb_encrypt
 from three import gen_aes_key
 
 
@@ -10,20 +12,13 @@ PAD = """Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
          aGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBq
          dXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUg
          YnkK""".strip()
-#KEY = gen_aes_key()
-KEY = unhexlify("c2e7b8ae53a2860ecbc62e33d30a5954")
+KEY = gen_aes_key()
+#KEY = unhexlify("c2e7b8ae53a2860ecbc62e33d30a5954")
 
 def pad(a, bs=16, pad="\x04"):
     while len(a) % bs != 0:
         a += pad
     return a
-
-
-def aes_ecb_encrypt(pt, key):
-    from Crypto.Cipher import AES
-    aes = AES.new(key, mode=AES.MODE_ECB)
-    pt = pad(pt, bs=aes.block_size)
-    return aes.encrypt(pt)
 
 
 def padding_oracle(pt, key, pad):

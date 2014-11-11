@@ -26,6 +26,8 @@ import os
 
 from Crypto.Cipher import AES
 
+from two import aes_ecb_encrypt
+
 
 def gen_aes_key(block_size=16):
     return os.urandom(block_size)  # be sure to use kernel entropy
