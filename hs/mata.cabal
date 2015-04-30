@@ -33,4 +33,5 @@ Test-Suite test-mata
                  test-framework-hunit,
                  HUnit,
                  bytestring,
+                 hexstring,
                  mata

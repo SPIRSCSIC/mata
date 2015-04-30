@@ -7,14 +7,17 @@ import Data.HexString
 import Data.ByteString
 import Data.Text.Encoding (encodeUtf8)
 
+dumpHex :: HexString -> ByteString
+dumpHex = encodeUtf8 . toText
+
 {- Convert a string of bytes to their hex form.
 hexlify "\xfe\xed\xfa\xce" = "feedface"
 -}
-hexlify :: ByteString -> ByteString
-hexlify = encodeUtf8 . toText . fromBytes
+hexlify :: ByteString -> HexString
+hexlify = fromBytes
 
 {- Convert a hex-encoded string such as "feedface" to its raw bytes,
 in this case "\xfe\xed\xfa\xce"
 -}
-unhexlify :: ByteString -> ByteString
-unhexlify = toBytes . hexString
+unhexlify :: HexString -> ByteString
+unhexlify = toBytes

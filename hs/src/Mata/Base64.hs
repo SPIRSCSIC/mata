@@ -3,6 +3,7 @@ module Mata.Base64 where
 import Data.ByteString hiding (pack)
 import Data.ByteString.Base64 (encode, decode)
 import Data.ByteString.Char8 (pack)
+import Data.HexString
 
 import Mata.Hex
 
@@ -16,7 +17,7 @@ b64Encode = encode
 This first decodes the hexadecimal into raw bytes, then encodes with base 64.
 For instance, both strings "aaaa" and "AAAA" will encode to "qqo="
 -}
-b64HexEncode :: ByteString -> ByteString
+b64HexEncode :: HexString -> ByteString
 b64HexEncode = encode . unhexlify
 
 {- Decodes a Base64 string to a ByteString. That's it. -}
