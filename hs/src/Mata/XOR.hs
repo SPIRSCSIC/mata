@@ -22,3 +22,10 @@ xor x y = Data.ByteString.pack $ _xor _x _y where
 {- xor two known hexstrings together -}
 hexxor :: HexString -> HexString -> HexString
 hexxor x y = hexlify $ Mata.XOR.xor (unhexlify x) (unhexlify y)
+
+{- xor all bytes in a string with one byte -}
+xor1 :: ByteString -> Char -> ByteString
+xor1 x y = Data.ByteString.pack $ Prelude.map f _x where
+  _x = (Data.ByteString.unpack x)
+  _y = Data.ByteString.head $ Data.ByteString.Char8.pack [y]
+  f = Data.Bits.xor _y

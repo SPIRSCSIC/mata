@@ -54,9 +54,20 @@ testChallenge2 = assertEqual "Fixed XOR"
                    two = hexString $ pack "686974207468652062756c6c277320657965"
                    three = hexString $ pack "746865206b696420646f6e277420706c6179"
 
+-- Challenge 3
+
+testXORSingleByte :: Assertion
+testXORSingleByte = assertEqual "XOR with one byte"
+                    (xor1 one 'a') three where
+                      one = pack "aaaa"
+                      three = pack "\x00\x00\x00\x00"
+
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify
         , testCase "b64 hex encode" testb64HexEncode
         , testCase "b64 decode" testb64Decode
+
         , testCase "XOR" testXOR
-        , testCase "Challenge 2" testChallenge2 ]
+        , testCase "Challenge 2" testChallenge2
+
+        , testCase "XOR with 1 byte" testXORSingleByte]
