@@ -9,6 +9,7 @@ ciphertext.
 
 import urllib2
 from binascii import unhexlify, hexlify
+from collections import Counter
 
 FILE = "http://cryptopals.com/static/challenge-data/8.txt"
 def ciphertexts():
@@ -24,7 +25,8 @@ def is_ecb(ct):
     # split ct in 128-bit (16 byte) blocks
     blocks = [''.join(x) for x in zip(*[list(ct[z::16]) for z in range(16)])]
     # compare number of unique blocks to number of blocks
-    if len(set(blocks)) < len(blocks):
+    unique = Counter(blocks)
+    if len(unique.keys()) < len(blocks):
         return True
     else:
         return False

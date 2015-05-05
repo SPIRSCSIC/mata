@@ -41,7 +41,6 @@ def ciphertext():
 KEY = "YELLOW SUBMARINE"
 _PT = pad("asdf")
 IV = "\x00" * 16
-CT = ciphertext()
 
 
 def aes_ecb_encrypt(key, pt):
@@ -60,6 +59,7 @@ def blocks(s, bs=16):
 
 def aes_cbc_encrypt(key, pt, iv):
     ct = ""
+    pt = pad(pt)
     pt_blocks = blocks(pt)
     init = aes_ecb_encrypt(key, xor(iv, pt_blocks[0]))
     ct += init
@@ -82,5 +82,8 @@ def aes_cbc_decrypt(key, ct, iv):
 
 
 if __name__ == "__main__":
+    CT = ciphertext()
     assert aes_ecb_decrypt(KEY, aes_ecb_encrypt(KEY, _PT)) == _PT
+    assert aes_cbc_decrypt(KEY, aes_cbc_encrypt(KEY, _PT, IV), IV) == _PT
     pt = aes_cbc_decrypt(KEY, CT, IV)
+    print(pt)
