@@ -7,6 +7,7 @@ import Data.HexString
 import Data.ByteString
 import Data.Text.Encoding (encodeUtf8)
 
+{- Dump a hex string to a normal bytestring, or something. -}
 dumpHex :: HexString -> ByteString
 dumpHex = encodeUtf8 . toText
 
