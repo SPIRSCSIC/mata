@@ -3,12 +3,14 @@ module Set1 where
 import Test.HUnit
 import Test.Framework
 import Test.Framework.Providers.HUnit
+
 import Data.ByteString.Char8 (pack)
 import Data.HexString
 
 import Mata.Base64
 import Mata.Hex
 import Mata.XOR
+import Mata.English
 
 -- Challenge 1
 
@@ -62,6 +64,13 @@ testXORSingleByte = assertEqual "XOR with one byte"
                       one = pack "aaaa"
                       three = pack "\x00\x00\x00\x00"
 
+testRankEnglish :: Assertion
+testRankEnglish = assertBool "English, yo"
+                  ((rank one) >= 7.5 && (rank one) <= 7.7) where
+                    one = pack "cooking mc's like a pound of bacon"
+
+
+
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify
         , testCase "b64 hex encode" testb64HexEncode
@@ -70,4 +79,5 @@ tests = [ testCase "Challenge 1" testChallenge1
         , testCase "XOR" testXOR
         , testCase "Challenge 2" testChallenge2
 
-        , testCase "XOR with 1 byte" testXORSingleByte]
+        , testCase "XOR with 1 byte" testXORSingleByte
+        , testCase "English ranking" testRankEnglish]

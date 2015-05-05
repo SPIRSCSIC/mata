@@ -48,4 +48,4 @@ def encryption_oracle(pt, key=None, mode=None):
         return aes_ecb_encrypt(key, pt)
     elif mode == AES.MODE_CBC:
         iv = os.urandom(16)
-        return aes_cbc_encrypt(key, pt, iv)
+        return aes_cbc_encrypt(key, pt, iv)    

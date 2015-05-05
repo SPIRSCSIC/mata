@@ -1,8 +1,12 @@
 module Mata.English where
 
 import Prelude
-import Data.ByteString
+import Data.ByteString hiding (unpack)
+import Data.ByteString.Char8 (unpack)
+import Data.Char
 import Data.Map
+
+import Mata.XOR
 
 {- Frequency as percentage of each letter in the english alphabet.
 The space character has a weight of 20% to give a bias to likely sentences.
@@ -18,6 +22,17 @@ frequencies = fromList [ ('E', 12.02), ('T', 9.10), ('A', 8.12),
                          ('K', 0.62), ('X', 0.17), ('Q', 0.11),
                          ('J', 0.10), ('Z', 0.07), (' ', 20.0) ]
 
-{-  -}
+{- Attempt to rank a string's likelyhood of being English. -}
 rank :: ByteString -> Float
-rank x = undefined
+rank x = (sum $ Prelude.map f (unpack x)) / len where
+  f _x = case (Data.Map.lookup (toUpper _x) frequencies) of
+             Just freq -> freq
+             Nothing -> 0.0
+  len = fromIntegral (Data.ByteString.length x)
+
+{- Rank possible single byte repeated keys in a xor cipher
+based on the likelyhood of the resulting plaintext being English.
+-}
+rankKeys :: ByteString -> [Char] -> Map Char Float
+rankKeys x ys = map rank pts
+  pts = map (xor1 x) ys
