@@ -69,6 +69,14 @@ testRankEnglish = assertBool "English, yo"
                   ((rank one) >= 7.5 && (rank one) <= 7.7) where
                     one = pack "cooking mc's like a pound of bacon"
 
+testChallenge3 = assertEqual "Challenge 3"
+                 (crackSingleCharKey ct ks) cracked where
+                   ks = ['a'..'z'] ++ ['A'..'Z']
+                   ct = unhexlify $ hexString $ pack $ "1b37373331363f78151b" ++
+                                                       "7f2b783431333d783978" ++
+                                                       "28372d363c78373e783a" ++
+                                                       "393b3736"
+                   cracked = ('X', pack "Cooking MC's like a pound of bacon")
 
 
 tests = [ testCase "Challenge 1" testChallenge1
@@ -80,4 +88,5 @@ tests = [ testCase "Challenge 1" testChallenge1
         , testCase "Challenge 2" testChallenge2
 
         , testCase "XOR with 1 byte" testXORSingleByte
-        , testCase "English ranking" testRankEnglish]
+        , testCase "English ranking" testRankEnglish
+        , testCase "Challenge 3" testChallenge3]

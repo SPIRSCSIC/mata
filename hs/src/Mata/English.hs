@@ -5,6 +5,7 @@ import Data.ByteString hiding (unpack)
 import Data.ByteString.Char8 (unpack)
 import Data.Char
 import Data.Map
+import Data.Tuple
 
 import Mata.XOR
 
@@ -34,5 +35,14 @@ rank x = (sum $ Prelude.map f (unpack x)) / len where
 based on the likelyhood of the resulting plaintext being English.
 -}
 rankKeys :: ByteString -> [Char] -> Map Char Float
-rankKeys x ys = map rank pts
-  pts = map (xor1 x) ys
+rankKeys ct ks = fromList $ Prelude.map (\x -> (x, rank $ xor1 ct x)) ks
+
+
+{- Attempt to find the correct single character repeated key for a cipher text,
+and return the decrypted plaintext. Assuming the plaintext is english.
+-}
+crackSingleCharKey :: ByteString -> [Char] -> (Char, ByteString)
+crackSingleCharKey ct ks = (k, pt) where
+  k = snd $ findMax $ _swap $ rankKeys ct ks
+  _swap = fromList . (Prelude.map Data.Tuple.swap) . assocs
+  pt = xor1 ct k
