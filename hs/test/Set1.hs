@@ -80,6 +80,8 @@ testChallenge3 = assertEqual "Challenge 3"
 
 -- Challenge 4
 
+testChallenge4 = do
+  cts <- getList "http://cryptopals.com/static/challenge-data/4.txt"
 
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify
