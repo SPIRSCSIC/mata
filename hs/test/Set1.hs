@@ -78,6 +78,8 @@ testChallenge3 = assertEqual "Challenge 3"
                                                        "393b3736"
                    cracked = ('X', pack "Cooking MC's like a pound of bacon")
 
+-- Challenge 4
+
 
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify

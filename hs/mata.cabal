@@ -3,24 +3,21 @@
 
 name:                mata
 version:             0.1.0.0
--- synopsis:            
--- description:         
--- license:             
+
 license-file:        LICENSE
 author:              bsmt
 maintainer:          bsmt@krax.in
--- copyright:           
--- category:            
+
 build-type:          Simple
--- extra-source-files:  
+
 cabal-version:       >=1.10
 
 library
-  exposed-modules: Mata.Hex, Mata.Base64, Mata.XOR, Mata.English
-  -- other-modules:       
-  -- other-extensions:    
+  exposed-modules: Mata.Hex, Mata.Base64, Mata.XOR, Mata.English, Mata.HTTP
+
   build-depends:       base >=4.8 && <4.9, bytestring, base64-bytestring,
-                       hexstring, text, binary, containers
+                       hexstring, text, binary, containers, lens, wreq,
+                       split
   hs-source-dirs:      src
   default-language:    Haskell2010
 
