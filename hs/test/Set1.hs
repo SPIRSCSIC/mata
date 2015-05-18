@@ -6,11 +6,13 @@ import Test.Framework.Providers.HUnit
 
 import Data.ByteString.Char8 (pack)
 import Data.HexString
+import Data.List
 
 import Mata.Base64
 import Mata.Hex
 import Mata.XOR
 import Mata.English
+import Mata.HTTP
 
 -- Challenge 1
 
@@ -81,7 +83,12 @@ testChallenge3 = assertEqual "Challenge 3"
 -- Challenge 4
 
 testChallenge4 = do
-  cts <- getList "http://cryptopals.com/static/challenge-data/4.txt"
+  four <- getList "http://cryptopals.com/static/challenge-data/4.txt"
+  let cts = Prelude.map (unhexlify . hexString . pack) four
+  let keys = ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']
+  let pts = Prelude.map ((flip crackSingleCharKey) keys) cts
+  let rankings = reverse $ sortOn fst $ Prelude.map (\x -> ((rank $ snd x), (snd x))) pts
+  assertEqual "Challenge 4" (snd $ head $ rankings) (pack "Now that the party is jumping\n")
 
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify
@@ -93,4 +100,6 @@ tests = [ testCase "Challenge 1" testChallenge1
 
         , testCase "XOR with 1 byte" testXORSingleByte
         , testCase "English ranking" testRankEnglish
-        , testCase "Challenge 3" testChallenge3]
+        , testCase "Challenge 3" testChallenge3
+
+        , testCase "Challenge 4" testChallenge4]
