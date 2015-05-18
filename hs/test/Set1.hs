@@ -20,19 +20,19 @@ import Mata.Hamming
 testHexlify :: Assertion
 testHexlify = assertEqual "hex encoding and decoding works"
               test (unhexlify $ hexlify test) where
-                test = pack "\xfe\xed\xfa\xce"
+                test = "\xfe\xed\xfa\xce"
 
 testb64HexEncode :: Assertion
 testb64HexEncode = assertEqual "base64 encoding hex strings works correctly."
                    (b64HexEncode test) correct where
                      test = hexString $ pack $ "aaaa"
-                     correct = pack $ "qqo="
+                     correct = "qqo="
 
 testb64Decode :: Assertion
 testb64Decode = assertEqual "base64 decoding works correctly."
                 (b64Decode test) _in where
-                  test = pack "qqo="
-                  _in = pack "\xaa\xaa"
+                  test = "qqo="
+                  _in = "\xaa\xaa"
 
 testChallenge1 :: Assertion
 testChallenge1 = assertEqual "I'm killing your brain like a poisonous mushroom"
@@ -40,17 +40,16 @@ testChallenge1 = assertEqual "I'm killing your brain like a poisonous mushroom"
                      _in = hexString $ pack $ "49276d206b696c6c696e6720796" ++
                            "f757220627261696e206c696b65206120706f69736f6e6" ++
                            "f7573206d757368726f6f6d"
-                     out = pack $ "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGE" ++
+                     out = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGE" ++
                            "gcG9pc29ub3VzIG11c2hyb29t"
 
 -- Challenge 2
 
 testXOR :: Assertion
 testXOR = assertEqual "Basic XOR"
-          (xor one two) three where
-            one = pack "\xfe\xed\xfa\xce"
-            two = one
-            three = pack "\x00\x00\x00\x00"
+          (xor one one) three where
+            one = "\xfe\xed\xfa\xce"
+            three = "\x00\x00\x00\x00"
 
 testChallenge2 :: Assertion
 testChallenge2 = assertEqual "Fixed XOR"
@@ -64,13 +63,13 @@ testChallenge2 = assertEqual "Fixed XOR"
 testXORSingleByte :: Assertion
 testXORSingleByte = assertEqual "XOR with one byte"
                     (xor1 one 'a') three where
-                      one = pack "aaaa"
-                      three = pack "\x00\x00\x00\x00"
+                      one = "aaaa"
+                      three = "\x00\x00\x00\x00"
 
 testRankEnglish :: Assertion
 testRankEnglish = assertBool "English, yo"
                   ((rank one) >= 7.5 && (rank one) <= 7.7) where
-                    one = pack "cooking mc's like a pound of bacon"
+                    one = "cooking mc's like a pound of bacon"
 
 testChallenge3 = assertEqual "Challenge 3"
                  (crackSingleCharKey ct ks) cracked where
@@ -79,7 +78,7 @@ testChallenge3 = assertEqual "Challenge 3"
                                                        "7f2b783431333d783978" ++
                                                        "28372d363c78373e783a" ++
                                                        "393b3736"
-                   cracked = ('X', pack "Cooking MC's like a pound of bacon")
+                   cracked = ('X', "Cooking MC's like a pound of bacon")
 
 -- Challenge 4
 
@@ -89,13 +88,13 @@ testChallenge4 = do
   let keys = ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']
   let pts = Prelude.map ((flip crackSingleCharKey) keys) cts
   let rankings = reverse $ sortOn fst $ Prelude.map (\x -> ((rank $ snd x), (snd x))) pts
-  assertEqual "Challenge 4" (snd $ head $ rankings) (pack "Now that the party is jumping\n")
+  assertEqual "Challenge 4" (snd $ head $ rankings) "Now that the party is jumping\n"
 
 -- Challenge 5
 
 testChallenge5 = assertEqual "Challenge 5"
-                 (hexlify $ repxor pt (pack "ICE")) ct where
-                   pt = pack $ "Burning 'em, if you ain't quick and nimble\n" ++
+                 (hexlify $ repxor pt "ICE") ct where
+                   pt = "Burning 'em, if you ain't quick and nimble\n" ++
                         "I go crazy when I hear a cymbal"
                    ct = hexString $ pack $ "0b3637272a2b2e63622c2e69692a2369" ++
                         "3a2a3c6324202d623d63343c2a26226324272765272a282b2f2" ++

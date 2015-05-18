@@ -24,24 +24,24 @@ frequencies = fromList [ ('E', 12.02), ('T', 9.10), ('A', 8.12),
                          ('J', 0.10), ('Z', 0.07), (' ', 20.0) ]
 
 {- Attempt to rank a string's likelyhood of being English. -}
-rank :: ByteString -> Float
-rank x = (sum $ Prelude.map f (unpack x)) / len where
+rank :: String -> Float
+rank x = (sum $ Prelude.map f x) / len where
   f _x = case (Data.Map.lookup (toUpper _x) frequencies) of
              Just freq -> freq
              Nothing -> 0.0
-  len = fromIntegral (Data.ByteString.length x)
+  len = fromIntegral (Prelude.length x)
 
 {- Rank possible single byte repeated keys in a xor cipher
 based on the likelyhood of the resulting plaintext being English.
 -}
-rankKeys :: ByteString -> [Char] -> Map Char Float
+rankKeys :: String -> [Char] -> Map Char Float
 rankKeys ct ks = fromList $ Prelude.map (\x -> (x, rank $ xor1 ct x)) ks
 
 
 {- Attempt to find the correct single character repeated key for a cipher text,
 and return the decrypted plaintext. Assuming the plaintext is english.
 -}
-crackSingleCharKey :: ByteString -> [Char] -> (Char, ByteString)
+crackSingleCharKey :: String -> [Char] -> (Char, String)
 crackSingleCharKey ct ks = (k, pt) where
   k = snd $ findMax $ _swap $ rankKeys ct ks
   _swap = fromList . (Prelude.map Data.Tuple.swap) . assocs
