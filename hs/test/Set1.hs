@@ -14,6 +14,7 @@ import Mata.XOR
 import Mata.English
 import Mata.HTTP
 import Mata.Hamming
+import Mata.Vigenere
 
 -- Challenge 1
 
@@ -106,6 +107,11 @@ testChallenge5 = assertEqual "Challenge 5"
 testHamming = assertEqual "test hamming distance function"
               (hamming "this is a test" "wokka wokka!!!") 37
 
+testChallenge6 = do
+  r <- get "http://cryptopals.com/static/challenge-data/6.txt"
+  let ct = b64Decode r
+  assertEqual "Challenge 6" (crackVigenere ct) "Terminator X: Bring the noise"
+
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify
         , testCase "b64 hex encode" testb64HexEncode
@@ -117,4 +123,5 @@ tests = [ testCase "Challenge 1" testChallenge1
         , testCase "Challenge 3" testChallenge3
         , testCase "Challenge 4" testChallenge4
         , testCase "Challenge 5" testChallenge5
-        , testCase "Hamming distance" testHamming]
+        , testCase "Hamming distance" testHamming
+        , testCase "Challenge 6" testChallenge6]

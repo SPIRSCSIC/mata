@@ -16,7 +16,7 @@ library
   exposed-modules: Mata.Hex, Mata.Base64, Mata.XOR, Mata.English, Mata.HTTP,
                    Mata.Hamming, Mata.Vigenere
 
-  build-depends:       base >=4.8 && <4.9, bytestring, base64-bytestring,
+  build-depends:       base >=4.8 && <4.9, bytestring, base64-string,
                        hexstring, text, binary, containers, lens, wreq,
                        split
   hs-source-dirs:      src

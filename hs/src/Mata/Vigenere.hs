@@ -2,26 +2,32 @@ module Mata.Vigenere where
 
 import Prelude
 
-import Data.ByteString.Char8 (pack, unpack)
 import Data.List
 import Data.List.Split
+import Data.Char
 
 import Mata.XOR
 import Mata.English
 import Mata.Hamming
 
-keybytes = ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']
-keysizes = [2..40]
+keybytes = Prelude.map chr [0x00..0x7f]
+keysizes = [3..40]
 
-sortKeysizes :: String -> [(Int, Int)]
+sortKeysizes :: String -> [(Float, Int)]
 sortKeysizes ct = sort distances where
+  ham x y = (fromIntegral (hamming x y)) :: Float
   rankSize s = do
-               let [one, two] = take 2 (chunksOf s ct)
-               ((hamming one two) `div` s, s)
+               let [one, two, three, four] = take 4 (chunksOf s ct)
+               let d1 = ham one two / fromIntegral s
+               let d2 = ham three four / fromIntegral s
+               let d3 = ham one three / fromIntegral s
+               let d4 = ham two four / fromIntegral s
+               (sum [d1,d2,d3,d4] / 4.0, s)
   distances = Prelude.map rankSize keysizes
 
+crackVigenere :: String -> [Char]
 crackVigenere ct = do
-  let keysize = head $ sortKeysizes ct
-  let blocks = transpose $ chunksOf (snd keysize) ct
+  let ks = snd $ head $ sortKeysizes ct
+  let blocks = transpose $ chunksOf ks ct
   let solved_blocks = Prelude.map (\x -> crackSingleCharKey x keybytes) blocks
   Prelude.map fst solved_blocks
