@@ -13,6 +13,7 @@ import Mata.Hex
 import Mata.XOR
 import Mata.English
 import Mata.HTTP
+import Mata.Hamming
 
 -- Challenge 1
 
@@ -101,18 +102,20 @@ testChallenge5 = assertEqual "Challenge 5"
                         "0430a652e2c652a3124333a653e2b2027630c692b2028316528" ++
                         "6326302e27282f"
 
+-- Challenge 6
+
+testHamming = assertEqual "test hamming distance function"
+              (hamming "this is a test" "wokka wokka!!!") 37
+
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify
         , testCase "b64 hex encode" testb64HexEncode
         , testCase "b64 decode" testb64Decode
-
         , testCase "XOR" testXOR
         , testCase "Challenge 2" testChallenge2
-
         , testCase "XOR with 1 byte" testXORSingleByte
         , testCase "English ranking" testRankEnglish
         , testCase "Challenge 3" testChallenge3
-
         , testCase "Challenge 4" testChallenge4
-
-        , testCase "Challenge 5" testChallenge5]
+        , testCase "Challenge 5" testChallenge5
+        , testCase "Hamming distance" testHamming]
