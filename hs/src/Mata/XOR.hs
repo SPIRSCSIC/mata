@@ -1,9 +1,10 @@
 module Mata.XOR where
 
 import Prelude
+
 import Data.Bits
 import Data.ByteString
-import Data.ByteString.Char8 (pack, unpack)
+import qualified Data.ByteString.Char8 as Char8
 import Data.ByteString.Lazy (toStrict, fromStrict)
 import Data.HexString
 import Data.Binary
@@ -27,5 +28,14 @@ hexxor x y = hexlify $ Mata.XOR.xor (unhexlify x) (unhexlify y)
 xor1 :: ByteString -> Char -> ByteString
 xor1 x y = Data.ByteString.pack $ Prelude.map f _x where
   _x = (Data.ByteString.unpack x)
-  _y = Data.ByteString.head $ Data.ByteString.Char8.pack [y]
+  _y = Data.ByteString.head $ Char8.pack [y]
   f = Data.Bits.xor _y
+
+{- pad a string to a given length by repeating it -}
+reppad :: String -> Int -> String
+reppad x l = Prelude.take l (Prelude.concat $ Prelude.repeat x)
+
+{- xor a string with an optionally shorter key by padding with repetition -}
+repxor :: ByteString -> ByteString -> ByteString
+repxor one k = Mata.XOR.xor one key where
+  key = Char8.pack $ reppad (Char8.unpack k) (Char8.length one)

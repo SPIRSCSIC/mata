@@ -90,6 +90,17 @@ testChallenge4 = do
   let rankings = reverse $ sortOn fst $ Prelude.map (\x -> ((rank $ snd x), (snd x))) pts
   assertEqual "Challenge 4" (snd $ head $ rankings) (pack "Now that the party is jumping\n")
 
+-- Challenge 5
+
+testChallenge5 = assertEqual "Challenge 5"
+                 (hexlify $ repxor pt (pack "ICE")) ct where
+                   pt = pack $ "Burning 'em, if you ain't quick and nimble\n" ++
+                        "I go crazy when I hear a cymbal"
+                   ct = hexString $ pack $ "0b3637272a2b2e63622c2e69692a2369" ++
+                        "3a2a3c6324202d623d63343c2a26226324272765272a282b2f2" ++
+                        "0430a652e2c652a3124333a653e2b2027630c692b2028316528" ++
+                        "6326302e27282f"
+
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify
         , testCase "b64 hex encode" testb64HexEncode
@@ -102,4 +113,6 @@ tests = [ testCase "Challenge 1" testChallenge1
         , testCase "English ranking" testRankEnglish
         , testCase "Challenge 3" testChallenge3
 
-        , testCase "Challenge 4" testChallenge4]
+        , testCase "Challenge 4" testChallenge4
+
+        , testCase "Challenge 5" testChallenge5]
