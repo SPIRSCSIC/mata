@@ -15,6 +15,7 @@ import Mata.English
 import Mata.HTTP
 import Mata.Hamming
 import Mata.Vigenere
+import Mata.AES
 
 -- Challenge 1
 
@@ -112,6 +113,23 @@ testChallenge6 = do
   let ct = b64Decode r
   assertEqual "Challenge 6" (crackVigenere ct) "Terminator X: Bring the noise"
 
+-- Challenge 7
+
+testChallenge7 = do
+  r <- get "http://cryptopals.com/static/challenge-data/7.txt"
+  let ct = b64Decode r
+  let pt = ecbDecrypt ct "YELLOW SUBMARINE"
+  assertEqual "Challenge 7" (take 33 pt) "I'm back and I'm ringin' the bell"
+
+-- Challenge 8
+
+testChallenge8 = do
+  -- not totally sure if this is right, but it only finds one ciphertext, so whatevs
+  _cts <- getList "http://cryptopals.com/static/challenge-data/8.txt"
+  let cts = Prelude.map b64Decode _cts
+  let ecbs = Prelude.filter detectECB cts
+  assertBool "Challenge 8" (length ecbs == 1)
+
 tests = [ testCase "Challenge 1" testChallenge1
         , testCase "hexlify" testHexlify
         , testCase "b64 hex encode" testb64HexEncode
@@ -124,4 +142,6 @@ tests = [ testCase "Challenge 1" testChallenge1
         , testCase "Challenge 4" testChallenge4
         , testCase "Challenge 5" testChallenge5
         , testCase "Hamming distance" testHamming
-        , testCase "Challenge 6" testChallenge6]
+        , testCase "Challenge 6" testChallenge6
+        , testCase "Challenge 7" testChallenge7
+        , testCase "Challenge 8" testChallenge8]

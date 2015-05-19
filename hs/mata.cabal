@@ -14,11 +14,11 @@ cabal-version:       >=1.10
 
 library
   exposed-modules: Mata.Hex, Mata.Base64, Mata.XOR, Mata.English, Mata.HTTP,
-                   Mata.Hamming, Mata.Vigenere
+                   Mata.Hamming, Mata.Vigenere, Mata.AES
 
   build-depends:       base >=4.8 && <4.9, bytestring, base64-string,
                        hexstring, text, binary, containers, lens, wreq,
-                       split
+                       split, cipher-aes
   hs-source-dirs:      src
   default-language:    Haskell2010
 
